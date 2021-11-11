@@ -1,0 +1,4 @@
+scrapy
+pandas
+feather-format
+boto3

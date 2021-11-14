@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import date
 
 @dataclass
 class Publicacao:
@@ -9,9 +10,10 @@ class Publicacao:
 
     """
 
+    id: str 
     secao: str
     tipo_normativo: str
-    data: str
+    data: date
     escopo: str
     titulo: str
     ementa: str

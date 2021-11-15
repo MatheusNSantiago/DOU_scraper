@@ -15,6 +15,7 @@ def scrape_xml(raw_xml: str, data:date) -> Publicacao:
     tipo_normativo = article.get("artType")
     escopo = article.attrib.get("artCategory")
     titulo = article.find("body/Identifica").text
+    titulo = titulo if titulo is None else titulo.strip()
     ementa = article.find("body/Ementa").text
     conteudo = article.find("body/Texto").text
 

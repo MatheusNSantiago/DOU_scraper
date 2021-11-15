@@ -18,16 +18,16 @@ def handler(event, context):
 
     process.start()
 
-#     # |-----------------------------------------||-----------------------------------------|
+    # |-----------------------------------------||-----------------------------------------|
 
     if not os.path.exists("zips"):
         os.mkdir("zips")
-
+    
     for zip_path in os.listdir("zips"):
         zip_path = f"zips/{zip_path}"
         publicacoes = extract_publicacoes_from_zip(zip_path)
-        
+
         upload_publicacoes_to_database(publicacoes)
-        
+
         os.remove(zip_path)
-        
+    return 

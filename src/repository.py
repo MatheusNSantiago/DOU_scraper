@@ -1,16 +1,36 @@
-import boto3
 from .utils import get_env_variable
+from typing import List
+import mysql.connector
+
+from .model import Publicacao
 
 
-def upload_to_aws(local_file, bucket, s3_file):
+mydb = mysql.connector.connect(
+    host=get_env_variable("MYSQL/ENDPOINT"),
+    user=get_env_variable("MYSQL/USER"),
+    password=get_env_variable("MYSQL/PASSWORD"),
+    database=get_env_variable("MYSQL/DATABASE"),
+)
 
-    access_key = get_env_variable("ACCESS_KEY")
-    secret_key = get_env_variable("SECRET_KEY")
+mycursor= mydb.cursor()
 
-    s3 = boto3.client(
-        "s3",
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key,
-    )
+def upload_publicacoes_to_database(publicacoes: List[Publicacao]):
+    sql = "INSERT INTO publicacoes VALUES (%s, %s, %s, %s, %s, %s,%s, %s)"
 
-    s3.upload_file(local_file, bucket, s3_file)
+    val = [
+        (
+            pub.id,
+            pub.secao,
+            pub.tipo_normativo,
+            pub.data,
+            pub.escopo,
+            pub.titulo,
+            pub.ementa,
+            pub.conteudo,
+        )
+        for pub in publicacoes
+    ]
+
+    mycursor.executemany(sql, val)
+
+    mydb.commit()

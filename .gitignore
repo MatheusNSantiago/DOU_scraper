@@ -2,5 +2,8 @@
 .vscode
 **/__pycache__
 credentials.json
-zips
+tmp
 analise.ipynb
+dockerfile
+.dockerignore
+tmp

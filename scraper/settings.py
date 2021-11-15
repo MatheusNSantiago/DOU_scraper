@@ -7,17 +7,17 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+from ..lambda_function import TEMP_FOLDER_LAMBDA, TEMP_FOLDER_LOCAL
+
+
 BOT_NAME = "scraper"
 
 SPIDER_MODULES = ["scraper.spiders"]
 NEWSPIDER_MODULE = "scraper.spiders"
 
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'scraper (+http://www.yourdomain.com)'
-
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
+
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 # CONCURRENT_REQUESTS = 32
@@ -51,7 +51,8 @@ ROBOTSTXT_OBEY = False
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 # DOWNLOADER_MIDDLEWARES = {
-#    'scraper.middlewares.ScraperDownloaderMiddleware': 543,
+#     "scrapy_proxy_pool.middlewares.ProxyPoolMiddleware": 610,
+#     "scrapy_proxy_pool.middlewares.BanDetectionMiddleware": 620,
 # }
 
 # Enable or disable extensions
@@ -66,7 +67,9 @@ ITEM_PIPELINES = {
     "scraper.pipelines.ScraperPipeline": 1,
 }
 
-FILES_STORE = './'
+
+FILES_STORE = TEMP_FOLDER_LOCAL
+# FILES_STORE = TEMP_FOLDER_LAMBDA
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

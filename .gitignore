@@ -6,4 +6,5 @@ tmp
 analise.ipynb
 dockerfile
 .dockerignore
-tmp
+lambda.zip
+to_zip_lambda.sh

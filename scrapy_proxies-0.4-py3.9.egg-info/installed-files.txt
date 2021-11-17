@@ -1,8 +1,0 @@
-../scrapy_proxies/__init__.py
-../scrapy_proxies/__pycache__/__init__.cpython-39.pyc
-../scrapy_proxies/__pycache__/randomproxy.cpython-39.pyc
-../scrapy_proxies/randomproxy.py
-PKG-INFO
-SOURCES.txt
-dependency_links.txt
-top_level.txt

@@ -8,9 +8,6 @@ import os
 
 
 def lambda_handler(event, context):
- 
-    utils.get_proxy()
-    
     # Começar o crawler
     process = CrawlerProcess(get_project_settings())
     process.crawl(
@@ -20,22 +17,29 @@ def lambda_handler(event, context):
     )
     process.start()
 
-    # |-----------------------------------------||-----------------------------------------|
+    # # |-----------------------------------------||-----------------------------------------|
 
     # extrair dados e passar pra database
-    zip_folder_path = utils.TEMP_FOLDER
+    folder_path = utils.TEMP_FOLDER
 
-    if not os.path.exists(zip_folder_path):
-        os.mkdir(zip_folder_path)
+    if not os.path.exists(folder_path):
+        os.mkdir(folder_path)
+    folder = os.listdir(folder_path)
 
-    for zip_filename in os.listdir(zip_folder_path):
-        publicacoes = extract_publicacoes_from_zip(zip_folder_path+'/'+zip_filename)
+    zips_processed = 0
+    for zip_filename in folder:
+        publicacoes = extract_publicacoes_from_zip(f"{folder_path}/{zip_filename}")
 
         upload_publicacoes_to_database(publicacoes)
 
-        os.remove(zip_filename)
+        pct_complete = (
+            f"({round((zips_processed/len(os.listdir(folder_path)) * 100),2)}%)"
+        )
+        print(pct_complete, zip_filename)
+        zips_processed += 1
+
     return
 
 
 if __name__ == "__main__":
-    lambda_handler(1, 2)
+    lambda_handler(None, None)

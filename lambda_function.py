@@ -6,10 +6,14 @@ from src.repository import upload_publicacoes_to_database
 import src.utils as utils
 import os
 
-TEMP_FOLDER = "../../tmp" # É usado só em lambda function
-# TEMP_FOLDER = "./tmp" 
+TEMP_FOLDER = "../../tmp"  # É usado só em lambda function
+# TEMP_FOLDER = "./tmp" sss
+
 
 def lambda_handler(event, context):
+ 
+    utils.get_proxy()
+    
     # Começar o crawler
     process = CrawlerProcess(get_project_settings())
     process.crawl(
@@ -18,19 +22,23 @@ def lambda_handler(event, context):
         password=utils.get_env_variable("INLABS/PASSWORD"),
     )
     process.start()
-    
-    # |-----------------------------------------||-----------------------------------------|
-    
-    # extrair dados e passar pra database
-    zip_folder_path = TEMP_FOLDER
 
-    if not os.path.exists(zip_folder_path):
-        os.mkdir(zip_folder_path)
+    # # |-----------------------------------------||-----------------------------------------|
 
-    for zip_filename in os.listdir(zip_folder_path):
-        publicacoes = extract_publicacoes_from_zip(zip_folder_path+'/'+zip_filename)
+    # # extrair dados e passar pra database
+    # zip_folder_path = TEMP_FOLDER
 
-        upload_publicacoes_to_database(publicacoes)
+    # if not os.path.exists(zip_folder_path):
+    #     os.mkdir(zip_folder_path)
 
-        os.remove(zip_filename)
-    return
+    # for zip_filename in os.listdir(zip_folder_path):
+    #     publicacoes = extract_publicacoes_from_zip(zip_folder_path+'/'+zip_filename)
+
+    #     upload_publicacoes_to_database(publicacoes)
+
+    #     os.remove(zip_filename)
+    # return
+
+
+if __name__ == "__main__":
+    lambda_handler(1, 2)

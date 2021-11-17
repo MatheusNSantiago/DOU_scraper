@@ -7,7 +7,7 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-from ..lambda_function import TEMP_FOLDER_LAMBDA, TEMP_FOLDER_LOCAL
+from lambda_function import TEMP_FOLDER
 
 
 BOT_NAME = "scraper"
@@ -68,8 +68,7 @@ ITEM_PIPELINES = {
 }
 
 
-FILES_STORE = TEMP_FOLDER_LOCAL
-# FILES_STORE = TEMP_FOLDER_LAMBDA
+FILES_STORE = TEMP_FOLDER
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

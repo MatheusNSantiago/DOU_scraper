@@ -15,5 +15,5 @@ class ScraperPipeline(FilesPipeline):
     def file_path(self, request, response=None, info=None, *, item=None):
         file_name : str = item["file_name"]
         
-        return f"zips/{file_name}"
+        return file_name
 

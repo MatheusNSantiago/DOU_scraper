@@ -1,18 +1,19 @@
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
+from scraper.spiders.dou_spider import DOU_Spider
 from src.load_data import extract_publicacoes_from_zip
 from src.repository import upload_publicacoes_to_database
 import src.utils as utils
 import os
 
-TEMP_FOLDER_LAMBDA = "../../tmp" # É usado só em lambda function
-TEMP_FOLDER_LOCAL = "./tmp" # É usado só em lambda function
+TEMP_FOLDER = "../../tmp" # É usado só em lambda function
+# TEMP_FOLDER = "./tmp" 
 
 def lambda_handler(event, context):
     # Começar o crawler
     process = CrawlerProcess(get_project_settings())
     process.crawl(
-        "dou",
+        DOU_Spider,
         email=utils.get_env_variable("INLABS/EMAIL"),
         password=utils.get_env_variable("INLABS/PASSWORD"),
     )
@@ -21,7 +22,7 @@ def lambda_handler(event, context):
     # |-----------------------------------------||-----------------------------------------|
     
     # extrair dados e passar pra database
-    zip_folder_path = TEMP_FOLDER_LOCAL
+    zip_folder_path = TEMP_FOLDER
 
     if not os.path.exists(zip_folder_path):
         os.mkdir(zip_folder_path)

@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from datetime import date
 
+from bs4.element import Tag
+
 @dataclass
 class Publicacao:
     """Representa uma publicação no Diário Oficial da União
 
-    - A ementa pode ser None
-    - O titulo pode ser None
+    - A ementa, título e assinatura podem ser None
 
     """
 
@@ -15,7 +16,18 @@ class Publicacao:
     tipo_normativo: str
     data: date
     escopo: str
-    titulo: str
-    ementa: str
     conteudo: str
+    
+    ementa: Tag
+    titulo: Tag
+    assinatura: Tag
+
+    def __post_init__(self):
+        if self.ementa is not None:
+            self.ementa = self.ementa.text.strip()
+        if self.titulo is not None:
+            self.titulo = self.titulo.text
+        if self.assinatura is not None:
+            self.assinatura = self.assinatura.text
+            
 

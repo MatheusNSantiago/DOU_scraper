@@ -17,11 +17,11 @@ mycursor = mydb.cursor()
 
 def upload_publicacoes_to_database(publicacoes: List[Publicacao]):
 
-    sql = "INSERT INTO publicacoes VALUES (%s, %s, %s, %s, %s,%s, %s)"
+    sql = "INSERT INTO publicacoes VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     val = [
         (
-            # pub.id,
+            pub.id,
             pub.secao,
             pub.tipo_normativo,
             pub.data,
@@ -29,6 +29,7 @@ def upload_publicacoes_to_database(publicacoes: List[Publicacao]):
             pub.titulo,
             pub.ementa,
             pub.conteudo,
+            pub.assinatura,
         )
         for pub in publicacoes
     ]

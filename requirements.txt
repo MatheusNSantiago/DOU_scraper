@@ -1,3 +1,4 @@
 scrapy
 mysql-connector-python
 requests
+bs4

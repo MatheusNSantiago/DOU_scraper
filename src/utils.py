@@ -1,6 +1,6 @@
 import json
 
-TEMP_FOLDER = "./tmp"  # É usado só em lambda function
+TEMP_FOLDER = "./tmp"  
 
 def get_env_variable(key: str):
     with open("credentials.json", "r") as f:

@@ -19,6 +19,7 @@ class Publicacao:
     escopo: str
     conteudo: str
     pdf:str
+    id_materia: str
 
     ementa: Tag
     titulo: Tag

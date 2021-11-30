@@ -20,6 +20,7 @@ def scrape_xml(raw_xml: str, data: date) -> Publicacao:
     tipo_normativo = soup_lxml.article["arttype"]
     escopo = soup_lxml.article["artcategory"]
     pdf = soup_lxml.article["pdfpage"]
+    id_materia = soup_lxml.article["idmateria"]
     
     # Conteudo
     titulo = conteudo_soup.find("p", class_="identifica")
@@ -37,4 +38,5 @@ def scrape_xml(raw_xml: str, data: date) -> Publicacao:
         ementa=ementa,
         assinatura=assinatura,
         pdf=pdf,
+        id_materia=id_materia,
     )

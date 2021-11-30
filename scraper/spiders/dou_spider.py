@@ -23,14 +23,16 @@ class DOU_Spider(Spider):
         )
             
     def dou_list(self, response: HtmlResponse):
-        """ Caso o DOU tenha a mesma data que o dia de hoje, vá pra página desse DOU  """
+        """ Caso o DOU tenha sido lançado numa data maior ou igual ao [self.date], vá pra página desses DOUs  """
 
-        first_folder = response.xpath("//div[@class='filename']/a")[0]
-        first_folder_name = first_folder.xpath(".//text()").get()
-        first_folder_date = datetime.strptime(first_folder_name.strip(), "%Y-%m-%d").date()
+        folders = response.xpath("//div[@class='filename']/a")
         
-        if first_folder_date == datetime.today().date():
-            yield response.follow(first_folder, callback=self.dou_page)
+        for folder in folders:
+            folder_name = folder.xpath(".//text()").get()
+            folder_date = datetime.strptime(folder_name.strip(), "%Y-%m-%d").date()
+            
+            if folder_date >= self.scrape_after_date:
+                yield response.follow(folder, callback=self.dou_page)
         
         
     def dou_page(self, response: HtmlResponse):

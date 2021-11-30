@@ -14,23 +14,27 @@ def scrape_xml(raw_xml: str, data: date) -> Publicacao:
     ].text
     conteudo_soup = bs4.BeautifulSoup(_conteudo, "lxml")
 
+    # Metadata
     _id = soup_lxml.article["id"]
-    _secao = soup_lxml.article["pubname"]
-    _tipo_normativo = soup_lxml.article["arttype"]
-    _escopo = soup_lxml.article["artcategory"]
-
-    _titulo = conteudo_soup.find("p", class_="identifica")
-    _ementa = conteudo_soup.find("p", class_="ementa")
-    _assinatura = conteudo_soup.find("p", class_="assina"),
-        
+    secao = soup_lxml.article["pubname"]
+    tipo_normativo = soup_lxml.article["arttype"]
+    escopo = soup_lxml.article["artcategory"]
+    pdf = soup_lxml.article["pdfpage"]
+    
+    # Conteudo
+    titulo = conteudo_soup.find("p", class_="identifica")
+    ementa = conteudo_soup.find("p", class_="ementa")
+    assinatura = (conteudo_soup.find("p", class_="assina"),)
+    
     return Publicacao(
         id=_id,
-        secao=_secao,
-        tipo_normativo=_tipo_normativo,
-        escopo=_escopo,
+        secao=secao,
+        tipo_normativo=tipo_normativo,
+        escopo=escopo,
         conteudo=_conteudo,
         data=data,
-        titulo=_titulo,
-        ementa=_ementa,
-        assinatura=_assinatura,
+        titulo=titulo,
+        ementa=ementa,
+        assinatura=assinatura,
+        pdf=pdf,
     )

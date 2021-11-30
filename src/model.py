@@ -18,6 +18,7 @@ class Publicacao:
     data: date
     escopo: str
     conteudo: str
+    pdf:str
 
     ementa: Tag
     titulo: Tag
@@ -28,7 +29,8 @@ class Publicacao:
             self.ementa = self.ementa.text.strip()
         if self.titulo is not None:
             self.titulo = self.titulo.text
-        if self.assinatura is not None:
-            if type(self.assinatura) is tuple:
-                self.assinatura = self.assinatura[0]
-            self.assinatura = self.assinatura.text
+        if self.assinatura[0] is not None:
+            self.assinatura = self.assinatura[0].text
+        else:
+            self.assinatura = None
+            

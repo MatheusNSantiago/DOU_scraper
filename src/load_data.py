@@ -5,6 +5,7 @@ from pathlib import Path
 from .scraper import scrape_xml
 import re
 from .model import Publicacao
+import logging
 
 
 def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
@@ -21,7 +22,12 @@ def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
             if file.filename.endswith(".xml"):
                 raw_xml = zip.read(file).decode()
 
-                publicacao = scrape_xml(raw_xml, data=data_publicacao)
-                publicacoes.append(publicacao)
+                try:
+                    publicacao = scrape_xml(raw_xml, data=data_publicacao)
+                    publicacoes.append(publicacao)
+                except Exception:
+                    logging.error(
+                        f"[scrape_xml] não conseguiu pegar os dados da publicação {path_zip}/{file.filename} (size = {file.file_size})"
+                    )
 
     return publicacoes

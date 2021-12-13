@@ -6,11 +6,7 @@ from bs4.element import Tag
 
 @dataclass
 class Publicacao:
-    """Representa uma publicação no Diário Oficial da União
-
-    - A ementa, título e assinatura podem ser None
-
-    """
+    """Representa uma publicação no Diário Oficial da União"""
 
     id: str
     secao: str
@@ -18,12 +14,12 @@ class Publicacao:
     data: date
     escopo: str
     conteudo: str
-    pdf:str
+    pdf: str
     id_materia: str
 
-    ementa: Tag
-    titulo: Tag
-    assinatura: Tag
+    ementa: str | None
+    titulo: str | None
+    assinatura: str | None
 
     def __post_init__(self):
         if self.ementa is not None:
@@ -34,4 +30,3 @@ class Publicacao:
             self.assinatura = self.assinatura[0].text
         else:
             self.assinatura = None
-            

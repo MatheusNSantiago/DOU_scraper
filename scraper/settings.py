@@ -7,7 +7,7 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-from src.utils import TEMP_FOLDER
+from config import TEMP_FOLDER
 
 
 BOT_NAME = "scraper"

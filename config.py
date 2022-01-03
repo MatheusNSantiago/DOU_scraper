@@ -1,3 +1,5 @@
+TEMP_FOLDER = "./tmp"
+
 inlabs = {
     "EMAIL": "matheus.nilo.santiago@gmail.com",
     "PASSWORD": "oasuet10",

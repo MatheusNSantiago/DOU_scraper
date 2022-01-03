@@ -6,9 +6,9 @@ import logging
 
 mydb = mysql.connector.connect(
     host="127.0.0.1",
-    user="root",
+    user="matheus",
     password="oasuet10",
-    database="dou_db_local",
+    database="test",
 )
 
 mycursor = mydb.cursor()

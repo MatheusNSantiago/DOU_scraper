@@ -4,9 +4,9 @@ from zipfile import ZipFile
 from pathlib import Path
 from .scraper import scrape_xml
 import re
-from .model import Publicacao
+from .publicacao import Publicacao
 import logging
-from .utils import tirar_acentuacao
+from .utils import tirar_acentuacao, progressBar
 
 
 def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
@@ -19,7 +19,12 @@ def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
 
     # Para cada arquivo xml no zip, extrai os dados que constituem uma publicação e acrescenta essa publicação na lista
     with ZipFile(path_zip, "r") as zip:
-        for file in zip.filelist:
+
+        # for file in zip.filelist:
+        for file in progressBar(
+            zip.filelist,
+            title=f'Extraindo publicações de "{path_zip}"',
+        ):
             if file.filename.endswith(".xml"):
                 raw_xml = zip.read(file).decode()
 
@@ -38,7 +43,8 @@ def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
 
 
 def limpar_publicacoes(publicacoes: List[Publicacao]) -> List[Publicacao]:
-    # ?Já que a inlabs faz o scrape direto do pdf, se uma publicação ocupa X páginas (X>1), a mesma publicação vai ser dividida em X xmls. Para consertar isso, basta encontrar as publicações com a id_materia repetida e junta conteúdos e a assinatura delas em uma publicação só
+    """Já que a inlabs faz o scrape direto do pdf, se uma publicação ocupa X páginas (X>1), a mesma publicação vai ser dividida em X xmls. Para consertar isso, basta encontrar as publicações com a id_materia repetida e junta conteúdos e a assinatura delas em uma publicação só"""
+
     pubs_por_id_materia = {}
 
     for pub in publicacoes:
@@ -49,7 +55,7 @@ def limpar_publicacoes(publicacoes: List[Publicacao]) -> List[Publicacao]:
         pubs_por_id_materia.setdefault(pub.id_materia, []).append(pub)
 
     clean_pubs = []
-    for id_materia, pubs in pubs_por_id_materia.items():
+    for _, pubs in pubs_por_id_materia.items():
         pub: Publicacao
 
         # Junta o conteudo e a assinatura das publicações repartidas

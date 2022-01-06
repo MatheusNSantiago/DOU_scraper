@@ -2,7 +2,7 @@ from datetime import date
 import bs4
 from bs4.element import CData
 
-from .model import Publicacao
+from .publicacao import Publicacao
 
 def scrape_xml(raw_xml: str, data: date) -> Publicacao:
     """Função auxiliar que que extrai os dados de um arquivo XML e retorna uma [Publicacao]"""

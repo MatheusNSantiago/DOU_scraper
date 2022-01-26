@@ -7,6 +7,9 @@ from scrapy import signals
 
 # useful for handling different item types with a single interface
 from itemadapter import is_item, ItemAdapter
+from scrapy.spiders import Spider
+
+from scraper import errors
 
 
 class ScraperSpiderMiddleware:
@@ -41,7 +44,14 @@ class ScraperSpiderMiddleware:
         # (from other spider middleware) raises an exception.
 
         # Should return either None or an iterable of Request or item objects.
-        pass
+
+        errors.scraper_raised_exception = errors.Raised_exceptions(
+            type(exception),
+            exception.reason,
+        )
+        
+        # Isso aqui faz com que ele pare de rodar todos as threads e quite do scrapy        
+        return []
 
     def process_start_requests(self, start_requests, spider):
         # Called with the start requests of the spider, and works
@@ -53,7 +63,7 @@ class ScraperSpiderMiddleware:
             yield r
 
     def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
+        spider.logger.info("Spider opened: %s" % spider.name)
 
 
 class ScraperDownloaderMiddleware:
@@ -100,4 +110,4 @@ class ScraperDownloaderMiddleware:
         pass
 
     def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
+        spider.logger.info("Spider opened: %s" % spider.name)

@@ -1,4 +1,8 @@
-TEMP_FOLDER = "./tmp"
+import os
+
+# No Lambda, a gente precisa colocar os zips no /tmp, mas localmente eu prefiro guardar aqui em ./tmp
+# Solução foi por $TEMP_FOLDER na AWS, e localmente a gente usa o default ./tmp
+TEMP_FOLDER = os.environ.get("TEMP_FOLDER", "./tmp")
 
 inlabs = {
     "EMAIL": "matheus.nilo.santiago@gmail.com",

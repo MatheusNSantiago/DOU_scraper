@@ -1,4 +1,5 @@
+azure-cosmos
 scrapy
 mysql-connector-python
-requests
 bs4
+tqdm

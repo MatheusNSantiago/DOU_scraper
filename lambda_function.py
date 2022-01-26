@@ -1,52 +1,72 @@
-from datetime import date, datetime, timedelta
+import logging
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraper.spiders.dou_spider import DOU_Spider
+from scraper.spiders.dou_spider_remote import DOUSpiderRemote
 from src.load_data import extract_publicacoes_from_zip
-from src.repository import upload_publicacoes_to_database
-import src.utils as utils
+from src.database.remote_db import inserir_publicacoes_remote_db
 import os
+import re
 import config
+import scraper.errors as errors
 
+logging.basicConfig(level="WARNING")
 
 def lambda_handler(event, context):
-    # scrape_after_date = date(2021, 12, 13)
-    scrape_after_date = date.today() - timedelta(days=1)
 
     # Começar o crawler
     process = CrawlerProcess(get_project_settings())
+
     process.crawl(
-        DOU_Spider,
+        DOUSpiderRemote,
         email=config.inlabs["EMAIL"],
         password=config.inlabs["PASSWORD"],
-        scrape_after_date=scrape_after_date,
     )
+
     process.start()
 
-    # |-----------------------------------------||-----------------------------------------|
-    # extrair dados e passar pra database
+    teve_algum_erro = errors.scraper_raised_exception != None
 
-    folder_path = utils.TEMP_FOLDER
+    if teve_algum_erro:
+        erro_no_scraper = errors.scraper_raised_exception
+        
+        if erro_no_scraper.exception is errors.PastaNaoEncontrada:
+            # TODO se for dia útil => Sucesso, se for problema do inlabs => roda dnv mais tarde
+            # Esperar 30 minutos e ir dnv
+            return {
+                "body": erro_no_scraper.reason,
+                "status": "PastaNaoEncontrada",
+            }
+        elif erro_no_scraper.exception is errors.FaltandoSecoes:
+            # TODO refazer o scrape mais tarde
+            return {
+                "body": erro_no_scraper.reason,
+                "status": "FaltandoSecoes",
+            }
+        else:
+            # TODO pensar em outros erros possíveis e tentar resolvelos
+            return {
+                "body": "Outra parada aconteceu",
+                "status": "ERRO",
+            }
 
-    if not os.path.exists(folder_path):
-        os.mkdir(folder_path)
+    else:
+        folder_path = config.TEMP_FOLDER
 
-    folder = [
-        i
-        for i in os.listdir(folder_path)
-        if datetime.strptime(i[:10], "%Y-%m-%d").date() >= scrape_after_date
-    ]
+        # Lista os zips que foram baixados
+        zip_files = [
+            file
+            for file in os.listdir(folder_path)
+            if re.search("\d{4}-\d{2}-\d{2}.+\.zip", file)  # formato do zip do DOU
+        ]
 
-    zips_processed = 0
-    for zip_filename in folder:
-        publicacoes = extract_publicacoes_from_zip(f"{folder_path}/{zip_filename}")
+        # Extrai e insere as publicações
+        publicacoes = []
+        for _zip in zip_files:
+            publicacoes.extend(extract_publicacoes_from_zip(f"{folder_path}/{_zip}"))
 
-        upload_publicacoes_to_database(publicacoes)
+        inserir_publicacoes_remote_db(publicacoes)
 
-        pct_complete = f"({round((zips_processed/len(folder) * 100),2)}%)"
-        print(pct_complete, zip_filename)
-        zips_processed += 1
-
-
-if __name__ == "__main__":
-    lambda_handler(None, None)
+        return {
+            "body": f"{len(publicacoes)} foram inseridas na database com sucesso",
+            "status": "OK",  # Sucesso
+        }

@@ -2,11 +2,13 @@ from datetime import datetime
 from typing import List
 from zipfile import ZipFile
 from pathlib import Path
-from .scraper import scrape_xml
 import re
-from .publicacao import Publicacao
 import logging
-from .utils import tirar_acentuacao, progressBar
+from .scraper import scrape_xml
+from .publicacao import Publicacao
+from .utils import tirar_acentuacao
+from tqdm import tqdm
+import concurrent.futures
 
 
 def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
@@ -19,11 +21,9 @@ def extract_publicacoes_from_zip(path_zip: Path) -> List[Publicacao]:
 
     # Para cada arquivo xml no zip, extrai os dados que constituem uma publicação e acrescenta essa publicação na lista
     with ZipFile(path_zip, "r") as zip:
-
-        # for file in zip.filelist:
-        for file in progressBar(
+        for file in tqdm(
             zip.filelist,
-            title=f'Extraindo publicações de "{path_zip}"',
+            desc=f'Extraindo publicações de "{path_zip}"',
         ):
             if file.filename.endswith(".xml"):
                 raw_xml = zip.read(file).decode()

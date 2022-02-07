@@ -46,7 +46,7 @@ class ScraperSpiderMiddleware:
         # Should return either None or an iterable of Request or item objects.
 
         errors.scraper_raised_exception = errors.Raised_exceptions(
-            type(exception),
+            exception,
             exception.reason,
         )
         

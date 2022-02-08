@@ -4,8 +4,12 @@ from tqdm import tqdm
 from azure.cosmos import CosmosClient
 import config
 import concurrent
+import logging
 
-
+# Tirar o spam de logging que o cosmosDB + urlib3 faz
+logging.basicConfig(level=logging.WARNING, force=True)
+logger_azure = logging.getLogger("azure.core.pipeline.policies.http_logging_policy")
+logger_azure.setLevel(logging.WARNING)
 
 def inserir_publicacoes_remote_db(pubs: List[Publicacao]):
     """Coloca as publicações na database [dou] no (cosmosDB)"""

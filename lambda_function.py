@@ -14,7 +14,6 @@ logging.basicConfig(level="WARNING")
 
 def lambda_handler(event, context):
     # Começar o crawler
-
     process = CrawlerProcess(get_project_settings())
 
     process.crawl(
@@ -40,13 +39,14 @@ def lambda_handler(event, context):
         if re.search("\d{4}-\d{2}-\d{2}.+\.zip", file)  # formato do zip do DOU
     ]
 
-    # Extrai e insere as publicações
+    # Extrai e limpa as publicações
     publicacoes = []
     for _zip in zip_files:
         publicacoes.extend(extract_publicacoes_from_zip(f"{folder_path}/{_zip}"))
 
+    # Insere no banco de dados
     inserir_publicacoes_remote_db(publicacoes)
-
+    
     return {
         "body": f"{len(publicacoes)} foram inseridas na database com sucesso",
         "status": "OK",  # Sucesso

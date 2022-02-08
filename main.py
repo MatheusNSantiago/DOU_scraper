@@ -1,5 +1,4 @@
 from datetime import date, timedelta
-import logging
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
 from scraper.spiders.dou_spider_local import DOUSpiderLocal
@@ -10,13 +9,15 @@ import os
 import config
 from src.utils import str_to_date
 
-logging.basicConfig(level="WARNING")
+# |─────────────────────────────────────────────| Config |─────────────────────────────────────────────|
 
 last_date = date.today()
-initial_date = date.today() - timedelta(days=0)
-# initial_date = date.today() - timedelta(days=0)
+initial_date = date.today() - timedelta(days=2)
 
-# Começar o crawler
+zip_folder_path = config.TEMP_FOLDER
+
+# |────────────────────────────────────────────| Crawler |─────────────────────────────────────────────|
+
 process = CrawlerProcess(get_project_settings())
 process.crawl(
     DOUSpiderLocal,
@@ -27,20 +28,22 @@ process.crawl(
 )
 process.start()
 
-folder_path = config.TEMP_FOLDER
+# |────────────────────────────────────────| Extração/Limpeza |────────────────────────────────────────|
 
-if not os.path.exists(folder_path):
-    os.mkdir(folder_path)
+if not os.path.exists(zip_folder_path):
+    os.mkdir(zip_folder_path)
 
 zip_files = [
     i
-    for i in os.listdir(folder_path)
+    for i in os.listdir(zip_folder_path)
     if (initial_date <= str_to_date(i[:10])) and (str_to_date(i[:10]) <= last_date)
 ]
 
 publicacoes = []
 for _zip in zip_files:
-    publicacoes.extend(extract_publicacoes_from_zip(f"{folder_path}/{_zip}"))
+    publicacoes.extend(extract_publicacoes_from_zip(f"{zip_folder_path}/{_zip}"))
+
+# |─────────────────────────────────────────| Inserção na DB |─────────────────────────────────────────|
 
 upload_publicacoes_to_local_db(publicacoes)
 # inserir_publicacoes_remote_db(publicacoes)

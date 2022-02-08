@@ -36,7 +36,7 @@ class Publicacao:
             "tipo_normativo": self.tipo_normativo,
             "data": str(self.data),
             "escopo": self.escopo,
-            "conteudo": self.id,
+            "conteudo": self.conteudo,
             "pdf": self.pdf,
             "id_materia": self.id_materia,
             "ementa": self.ementa,  # Pode ser None

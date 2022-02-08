@@ -2,7 +2,7 @@ from datetime import date
 from scrapy import Spider, FormRequest
 from scrapy.http.response.html import HtmlResponse
 from ..items import ScraperItem
-from src.utils import str_to_date
+from src.utils import str_to_date, today_brasil_tz
 import scraper.errors as errors
 import re
 
@@ -32,7 +32,7 @@ class DOUSpiderRemote(Spider):
         first_folder_date = str_to_date(folders.xpath(".//text()").get().strip())
 
         # | Fecha o scraper caso a última pasta não seja a de hoje
-        if first_folder_date != date.today():
+        if first_folder_date != today_brasil_tz():
             raise errors.PastaNaoEncontrada(last_folders_date=first_folder_date)
 
         # | Vai pra pasta do DOU de hoje e o da edição anterior
@@ -51,7 +51,7 @@ class DOUSpiderRemote(Spider):
             file_href = response.urljoin(file.xpath(".//@href").get())
 
             # | Se for a pasta de hoje, pega os zips da seção 1, 2 ou 3
-            if dou_date == date.today():
+            if dou_date == today_brasil_tz():
                 if re.search("\d{4}-\d{2}-\d{2}-DO[123]\.zip", file_name):
                     secoes[file_name] = file_href
 
@@ -60,7 +60,7 @@ class DOUSpiderRemote(Spider):
                 if re.search("\d{4}-\d{2}-\d{2}-DO[123]\w+\.zip", file_name):
                     secoes[file_name] = file_href
 
-        if (dou_date == date.today()) and (len(secoes.keys()) < 3):
+        if (dou_date == today_brasil_tz()) and (len(secoes.keys()) < 3):
             raise errors.FaltandoSecoes(secoes.keys())
 
         for file_name, file_url in secoes.items():

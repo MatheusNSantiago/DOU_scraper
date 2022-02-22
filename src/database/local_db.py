@@ -3,15 +3,15 @@ from mysql.connector.errors import IntegrityError
 from typing import List
 from ..publicacao import Publicacao
 from tqdm import tqdm
-import config
+
 
 
 def upload_publicacoes_to_local_db(publicacoes: List[Publicacao]):
     conn = mysql.connector.connect(
-        host=config.local_mysql["HOST"],
-        user=config.local_mysql["USER"],
-        password=config.local_mysql["PASSWORD"],
-        database=config.local_mysql["DATABASE"],
+        host="127.0.0.1",
+        user="matheus",
+        password="oasuet10",
+        database="test",
     )
 
     mycursor = conn.cursor()
@@ -40,7 +40,9 @@ def upload_publicacoes_to_local_db(publicacoes: List[Publicacao]):
 
         except IntegrityError as e:
             print(
-                f"{e}. Esse erro foi provavelmente obtido ao tentar inserir uma publicação que já existe na database (os ids delas são iguais)",
+                f"{e}. Esse erro foi provavelmente obtido ao tentar inserir uma publicação que já existe na database (os ids delas são iguais)", 
             )
 
+
+            
     conn.close()

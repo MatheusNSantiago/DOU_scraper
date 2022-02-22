@@ -9,12 +9,11 @@ inlabs = {
     "PASSWORD": "oasuet10",
 }
 
-mysql = {
-    "ENDPOINT": "dou-db.cyg7qmc7z4nk.sa-east-1.rds.amazonaws.com",
-    "PORT": 3306,
-    "USER": "admin",
+local_mysql = {
+    "HOST": "127.0.0.1",
+    "USER": "matheus",
     "PASSWORD": "oasuet10",
-    "DATABASE": "dou_db",
+    "DATABASE": "test",
 }
 
 cosmos = {

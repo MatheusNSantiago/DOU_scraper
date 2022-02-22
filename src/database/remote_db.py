@@ -7,7 +7,8 @@ import concurrent
 import logging
 
 # Tirar o spam de logging que o cosmosDB + urlib3 faz
-logging.basicConfig(level=logging.WARNING, force=True)
+logger_urllib3= logging.getLogger("urllib3.connectionpool")
+logger_urllib3.setLevel(logging.WARNING)
 logger_azure = logging.getLogger("azure.core.pipeline.policies.http_logging_policy")
 logger_azure.setLevel(logging.WARNING)
 

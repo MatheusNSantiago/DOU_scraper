@@ -5,14 +5,15 @@ from scraper.spiders.dou_spider_local import DOUSpiderLocal
 from src.load_data import extract_publicacoes_from_zip
 from src.database.local_db import upload_publicacoes_to_local_db
 from src.database.remote_db import inserir_publicacoes_remote_db
-import os
-import config
+import os, config, logging
 from src.utils import str_to_date
+
+logging.basicConfig(level="WARNING")
 
 # |─────────────────────────────────────────────| Config |─────────────────────────────────────────────|
 
 last_date = date.today()
-initial_date = date.today() - timedelta(days=2)
+initial_date = date.today() - timedelta(days=1)
 
 zip_folder_path = config.TEMP_FOLDER
 
@@ -46,4 +47,4 @@ for _zip in zip_files:
 # |─────────────────────────────────────────| Inserção na DB |─────────────────────────────────────────|
 
 upload_publicacoes_to_local_db(publicacoes)
-# inserir_publicacoes_remote_db(publicacoes)
+inserir_publicacoes_remote_db(publicacoes)
